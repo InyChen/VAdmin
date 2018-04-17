@@ -1,0 +1,31 @@
+{
+  "name": "vadmin",
+  "version": "1.0.0",
+  "description": "a prototype of admin based on vue and elementui",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/InyChen/VAdmin.git"
+  },
+  "author": "chen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/InyChen/VAdmin/issues"
+  },
+  "homepage": "https://github.com/InyChen/VAdmin#readme",
+  "dependencies": {
+    "vue": "^2.5.16",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "webpack": "^4.5.0",
+    "webpack-cli": "^2.0.14"
+  }
+}
