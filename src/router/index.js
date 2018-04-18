@@ -1,6 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+
+let _import
+if (process.env.NODE_ENV === 'production') {
+  _import = path => () => import(path + '.vue')
+} else {
+  _import = require
+}
 
 Vue.use(Router)
 
@@ -9,7 +15,7 @@ export default new Router({
     {
       path: '/',
       name: 'HelloWorld',
-      component: HelloWorld
+      component: _import('@/components/HelloWorld').default
     }
   ]
 })
