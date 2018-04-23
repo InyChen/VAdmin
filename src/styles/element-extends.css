@@ -1,3 +1,6 @@
+a {
+  text-decoration: none;
+}
 .el-submenu .el-menu-item {
   background: #1f2d3d !important;
   user-select: none;

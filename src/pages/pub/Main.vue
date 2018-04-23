@@ -44,13 +44,13 @@
           <div class="iconfont title-tools-icon" @click="toggleScreen" v-show="!isFullscreen" >&#xe601;</div>
           <div class="iconfont title-tools-icon" @click="toggleScreen" v-show="isFullscreen">&#xe600;</div>
 
-          <el-dropdown class="title-avatar-container right-menu-item" trigger="click">
-            <div class="title-avatar-wrapper">
-              <img class="title-user-avatar" src="@/assets/default-head.png">
-              <i class="el-icon-caret-bottom"></i>
+          <el-dropdown trigger="click">
+            <div class="title-ops">
+              <img class="title-head" src="@/assets/default-head.png" />
+              <i class="el-icon-arrow-down el-icon--right"></i>
             </div>
             <el-dropdown-menu slot="dropdown">
-              <router-link to="/">
+              <router-link to="/dashboard">
                 <el-dropdown-item>
                   首页
                 </el-dropdown-item>
@@ -103,7 +103,10 @@ export default {
       screenfull.toggle()
       this.isFullscreen = !this.isFullscreen
     },
-    logout () {}
+    logout () {
+      localStorage.removeItem("token")
+      this.$router.replace("login")
+    }
   },
   created () {
     this.loadMenu()
@@ -116,7 +119,6 @@ export default {
   position: relative;
   height: 100%;
   width: 100%;
-  overflow: hidden;
 }
 .side {
   position: absolute;
@@ -144,6 +146,7 @@ export default {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  min-width: 400px;
 }
 .main-collapse {
   left: 64px;
@@ -183,30 +186,15 @@ export default {
   height: 30px;
   line-height: 30px;
   width: 30px;
-  font-size: 26px;
+  font-size: 22px;
   text-align: center;
   cursor: pointer;
 }
-.title-avatar-container {
-  display: inline-block;
-  vertical-align: middle;
-  height: 30px;
-  margin-right: 30px;
-}
-.title-avatar-wrapper {
+.title-ops {
   cursor: pointer;
-  margin-top: 5px;
-  position: relative;
 }
-.title-user-avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 10px;
-}
-.title-avatar-container .el-icon-caret-bottom {
-  position: absolute;
-  left: 40px;
-  bottom: 10px;
-  font-size: 12px;
+.title-head {
+  height: 26px;
+  vertical-align: middle;
 }
 </style>
