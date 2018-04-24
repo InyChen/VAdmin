@@ -10,7 +10,9 @@ import request from "./utils/request"
 
 Vue.config.productionTip = false
 
-Vue.use(ElementUI)
+Vue.use(ElementUI, {
+  size: "small"
+})
 Vue.use(request)
 
 // 全局错误处理

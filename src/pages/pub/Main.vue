@@ -1,16 +1,12 @@
 <template>
   <div class="page">
-    <div class="side" :class="{'side-collapse':isCollapse}">
-      <el-menu default-active="1-4-1" class="el-menu-vertical-demo"
-        :collapse="isCollapse"
-        :background-color="style.backgroundColor"
-        :text-color="style.textColor"
-        :active-text-color="style.activeTextColor">
-        <el-menu-item index="ROOT" >
+    <div class="side" v-loading="loadingMenu" :class="{'side-collapse':isCollapse}">
+      <el-menu default-active="1-4-1" class="el-menu-vertical-demo" :collapse="isCollapse" :background-color="style.backgroundColor" :text-color="style.textColor" :active-text-color="style.activeTextColor">
+        <el-menu-item index="ROOT">
           <i class="el-icon-document"></i>
           <span slot="title">首页</span>
         </el-menu-item>
-        <template v-for="menu in menuList" >
+        <template v-for="menu in menuList">
           <el-submenu :index="menu.mid" :key="menu.mid" v-if="menu.children && menu.type!='URL'">
             <template slot="title">
               <i class="el-icon-location"></i>
@@ -39,9 +35,9 @@
     </div>
     <div class="main" :class="{'main-collapse':isCollapse}">
       <div class="title">
-        <div class="iconfont title-collapse" :class="{'title-collapse-close':isCollapse}" @click="isCollapse=!isCollapse" >&#xe653;</div>
+        <div class="iconfont title-collapse" :class="{'title-collapse-close':isCollapse}" @click="isCollapse=!isCollapse">&#xe653;</div>
         <div class="title-tools">
-          <div class="iconfont title-tools-icon" @click="toggleScreen" v-show="!isFullscreen" >&#xe601;</div>
+          <div class="iconfont title-tools-icon" @click="toggleScreen" v-show="!isFullscreen">&#xe601;</div>
           <div class="iconfont title-tools-icon" @click="toggleScreen" v-show="isFullscreen">&#xe600;</div>
 
           <el-dropdown trigger="click">
@@ -55,6 +51,9 @@
                   首页
                 </el-dropdown-item>
               </router-link>
+              <el-dropdown-item @click.native="showPasswordReset = true">
+                修改密码
+              </el-dropdown-item>
               <el-dropdown-item divided>
                 <span @click="logout" style="display:block;">退出登录</span>
               </el-dropdown-item>
@@ -62,6 +61,9 @@
           </el-dropdown>
         </div>
       </div>
+      <el-dialog title="修改密码" :visible.sync="showPasswordReset">
+        <PasswordReset @close="showPasswordReset=false" :show="showPasswordReset"></PasswordReset>
+      </el-dialog>
       <router-view>
         kkk
       </router-view>
@@ -71,26 +73,32 @@
 
 <script>
 import screenfull from "screenfull"
+import PasswordReset from "./components/PasswordReset"
 
 export default {
+  components: { PasswordReset },
   data () {
     return {
       menuList: [],
+      loadingMenu: false,
       isCollapse: false,
       isFullscreen: false,
       style: {
         backgroundColor: "#304156",
         textColor: "#bfcbd9",
         activeTextColor: "#409EFF"
-      }
+      },
+      showPasswordReset: false
     }
   },
   methods: {
     async loadMenu () {
+      this.loadingMenu = true
       let rs = await this.$get("/auth/loadRouter")
       if (rs.code == "0") {
         this.menuList = rs.list
       }
+      this.loadingMenu = false
     },
     toggleScreen () {
       if (!screenfull.enabled) {

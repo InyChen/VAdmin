@@ -11,6 +11,23 @@ if (process.env.NODE_ENV === "production") {
 
 Vue.use(Router)
 
+let routers = [
+  {
+    path: "",
+    redirect: "/module"
+  },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    component: _import("@/pages/dashboard/index").default
+  },
+  {
+    path: "/module",
+    name: "SysModule",
+    component: _import("@/pages/module/SysModule").default
+  }
+]
+
 export default new Router({
   routes: [
     {
@@ -26,17 +43,7 @@ export default new Router({
     {
       path: "/main",
       component: _import("@/pages/pub/Main").default,
-      children: [
-        {
-          path: "",
-          redirect: "/dashboard"
-        },
-        {
-          path: "/dashboard",
-          name: "Dashboard",
-          component: _import("@/pages/dashboard/index").default
-        }
-      ]
+      children: routers
     }
   ]
 })
