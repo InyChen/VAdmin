@@ -11,8 +11,8 @@
         <el-input v-model="form.repeatPassword"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm()">立即创建</el-button>
-        <el-button @click="$emit('close')">取消</el-button>
+        <el-button type="primary" @click="validForm" :loading="submiting">修改</el-button>
+        <el-button @click="$emit('close')" v-if="!submiting">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -28,7 +28,9 @@ export default {
   },
   data () {
     return {
+      submiting: false,
       form: {
+        uid: this.$store.state.user.uid,
         password: "",
         newPassword: "",
         repeatPassword: ""
@@ -72,15 +74,28 @@ export default {
     }
   },
   methods: {
-    submitForm () {
+    validForm () {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          alert("submit!")
+          this.doSubmit()
         } else {
-          console.log("error submit!!")
           return false
         }
       })
+    },
+    async doSubmit () {
+      this.submiting = true
+      let rs = await this.$post("auth/resetPassword", this.form)
+      if (rs.code == "0") {
+        this.$message({
+          message: "密码修改成功",
+          type: "success"
+        })
+        this.$emit("close")
+      } else {
+        this.$message.error(rs.msg)
+      }
+      this.submiting = false
     }
   }
 }

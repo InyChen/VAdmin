@@ -64,9 +64,11 @@
       <el-dialog title="修改密码" :visible.sync="showPasswordReset">
         <PasswordReset @close="showPasswordReset=false" :show="showPasswordReset"></PasswordReset>
       </el-dialog>
-      <router-view>
-        kkk
-      </router-view>
+      <div class="view">
+        <router-view>
+          kkk
+        </router-view>
+      </div>
     </div>
   </div>
 </template>
@@ -91,12 +93,19 @@ export default {
       showPasswordReset: false
     }
   },
+  computed: {
+    user () {
+      return this.$store.state.user
+    }
+  },
   methods: {
     async loadMenu () {
       this.loadingMenu = true
       let rs = await this.$get("/auth/loadRouter")
       if (rs.code == "0") {
         this.menuList = rs.list
+      } else {
+        alert(rs.msg)
       }
       this.loadingMenu = false
     },
@@ -114,10 +123,33 @@ export default {
     logout () {
       localStorage.removeItem("token")
       this.$router.replace("login")
+    },
+    async refreshUserInfo () {
+      // 有token的,刷新用户信息到state
+      let token = localStorage.getItem("token")
+      if (!token) {
+        // 没有token,跳转登录
+        this.$router.replace("/login")
+      } else {
+        let rs = await this.$post("auth/getUserInfo", { token })
+        if (rs && rs.code == "0" && rs.user) {
+          // 获取成功,set到state,并加载菜单
+          this.$store.commit("setUser", rs.user)
+          this.loadMenu()
+        } else {
+          // 获取失败,跳转登录
+          this.$router.replace("/login")
+        }
+      }
     }
   },
   created () {
-    this.loadMenu()
+    if (this.user) {
+      this.loadMenu()
+    } else {
+      // 请求获取用户信息
+      this.refreshUserInfo()
+    }
   }
 }
 </script>
@@ -127,6 +159,7 @@ export default {
   position: relative;
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 .side {
   position: absolute;
@@ -204,5 +237,10 @@ export default {
 .title-head {
   height: 26px;
   vertical-align: middle;
+}
+.view {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
 }
 </style>

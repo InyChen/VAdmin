@@ -4,32 +4,42 @@ import router from "@/router"
 
 axios.defaults.baseURL = config.apiBasePath
 
-axios.interceptors.request.use(function (config) {
-  let token = localStorage.getItem("token")
-  if (token) {
-    config.headers.Authorization = token
+axios.interceptors.request.use(
+  function (config) {
+    let token = localStorage.getItem("token")
+    if (token) {
+      config.headers.Authorization = token
+    }
+    return config
+  },
+  function (error) {
+    alert("请求失败,请检查网络:" + error)
+    return Promise.reject(error)
   }
-  return config
-}, function (error) {
-  alert("请求失败,请检查网络:" + error)
-  return Promise.reject(error)
-})
+)
 
 // Add a response interceptor
-axios.interceptors.response.use(function (response) {
-  let data = response.data
-  if (!data) {
-    alert("返回数据异常")
-    router.replace("/login")
+axios.interceptors.response.use(
+  function (response) {
+    let data = response.data
+    if (!data) {
+      alert("返回数据异常")
+      router.replace("/login")
+    }
+    if (data.code == "-8") {
+      alert("登录超时,请重启登录")
+      router.replace("/login")
+    }
+    if (data) {
+      return data
+    }
+    return response
+  },
+  function (error) {
+    alert("请求失败,请检查网络:" + error)
+    return Promise.reject(error)
   }
-  if (data) {
-    return data
-  }
-  return response
-}, function (error) {
-  alert("请求失败,请检查网络:" + error)
-  return Promise.reject(error)
-})
+)
 
 let request = {}
 request.install = function (Vue, options) {

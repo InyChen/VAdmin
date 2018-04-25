@@ -16,7 +16,7 @@
         <el-checkbox v-model="store">记住用户名</el-checkbox>
       </div>
       <div class="row-button">
-        <el-button type="primary" size="medium" @click="doLogin">登录</el-button>
+        <el-button type="primary" size="medium" @click="doLogin" :loading="loading">登录</el-button>
       </div>
     </div>
   </div>
@@ -31,7 +31,8 @@ export default {
         password: ""
       },
       showPassword: false,
-      store: false
+      store: false,
+      loading: false
     }
   },
   watch: {
@@ -60,9 +61,11 @@ export default {
         return null
       }
 
+      this.loading = true
       let rs = await this.$post("/auth/login", this.form)
       if (rs.code === "0") {
         localStorage.setItem("token", rs.token)
+        this.$store.commit("setUser", rs.user)
         if (this.store) {
           localStorage.setItem("uid", this.uid)
         }
@@ -70,6 +73,7 @@ export default {
       } else {
         this.$message.error(rs.msg)
       }
+      this.loading = false
     }
   },
   created () {

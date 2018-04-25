@@ -8,9 +8,10 @@
 
 <style scoped>
 .search-bar {
-  flex: 1 0 auto;
+  flex: 0 1 100%;
   padding: 10px;
   padding-bottom: 0;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #eee;
+  background: #fff;
 }
 </style>
