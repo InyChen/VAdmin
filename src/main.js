@@ -8,6 +8,7 @@ import ElementUI from "element-ui"
 import "element-ui/lib/theme-chalk/index.css"
 import "./styles/element-extends.css"
 import request from "./utils/request"
+import layouts from "@/components/layout"
 
 Vue.config.productionTip = false
 
@@ -15,6 +16,10 @@ Vue.use(ElementUI, {
   size: "small"
 })
 Vue.use(request)
+
+layouts.forEach(cpn => {
+  Vue.component(cpn.name, cpn)
+})
 
 // 全局错误处理
 const errorHandler = (error, vm) => {

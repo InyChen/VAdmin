@@ -1,6 +1,6 @@
 <template>
-  <GridPage>
-    <SearchBar>
+  <LayoutPage>
+    <LayoutSearch>
       <el-form-item label="模块">
         <el-input v-model="form.mname" placeholder="输入模块名查询"></el-input>
       </el-form-item>
@@ -13,8 +13,8 @@
       <el-form-item>
         <el-button type="primary" @click="onSearch">查询</el-button>
       </el-form-item>
-    </SearchBar>
-    <PaginateTable :data="filterdList" :loading="loading">
+    </LayoutSearch>
+    <LayoutTable ref="myTable" url="module/query" :param="form" :filter="filter">
       <el-table-column label="模块" width="220">
         <template slot-scope="props">
           <span :style="{'margin-left':(props.row.level-1)*30+'px'}">{{props.row.mname}}</span>
@@ -33,65 +33,40 @@
           <el-button type="danger">禁用</el-button>
         </template>
       </el-table-column>
-    </PaginateTable>
-  </GridPage>
+    </LayoutTable>
+  </LayoutPage>
 </template>
 
 <script>
-import {
-  GridPage,
-  PaginateTable,
-  SearchBar,
-  LayoutPager
-} from "@/components/layout"
-
 export default {
-  components: {
-    GridPage,
-    PaginateTable,
-    SearchBar,
-    LayoutPager
-  },
   data () {
     return {
-      form: { mname: "", state: "1" },
-      list: [],
-      currentPage: 1
-    }
-  },
-  computed: {
-    filterdList () {
-      return this.list.filter(item => {
-        return item.mname.indexOf(this.form.mname) > -1
-      })
+      form: { mname: "", state: "1" }
     }
   },
   methods: {
-    generalLevel (list) {
+    filter (list) {
+      let toList = []
+      this.generalLevel(list, toList)
+      return toList.filter(item => {
+        return item.mname.indexOf(this.form.mname) > -1
+      })
+    },
+    generalLevel (list, toList) {
       list.forEach((item, index) => {
-        item.open = true
-        item.show = true
-        this.list.push(item)
+        toList.push(item)
         if (item.children) {
-          this.generalLevel(item.children)
+          this.generalLevel(item.children, toList)
         }
       })
     },
-    async onSearch () {
-      this.loading = true
-      let rs = await this.$post("module/query", this.form)
-      if (rs.code == "0") {
-        this.list = []
-        this.generalLevel(rs.list)
-      }
-      this.loading = false
+    onSearch () {
+      this.$refs["myTable"].search()
     },
     handleSizeChange () {},
     handleCurrentChange () {}
   },
-  created () {
-    this.onSearch()
-  }
+  created () {}
 }
 </script>
 

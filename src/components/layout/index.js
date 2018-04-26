@@ -1,16 +1,9 @@
-import gridPage from "./GridPage"
-import paginateTable from "./PaginateTable"
-import searchBar from "./SearchBar"
-import layoutPager from "./LayoutPager"
+import layoutPage from "./LayoutPage"
+import layoutTable from "./LayoutTable"
+import layoutSearch from "./LayoutSearch"
 
-export const GridPage = gridPage
-export const PaginateTable = paginateTable
-export const SearchBar = searchBar
-export const LayoutPager = layoutPager
+export const LayoutPage = layoutPage
+export const LayoutTable = layoutTable
+export const LayoutSearch = layoutSearch
 
-export default {
-  gridPage: gridPage,
-  PaginateTable: paginateTable,
-  SearchBar: searchBar,
-  LayoutPager: layoutPager
-}
+export default [LayoutPage, LayoutTable, LayoutSearch]

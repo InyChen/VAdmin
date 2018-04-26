@@ -5,13 +5,8 @@
 </template>
 
 <script>
-import { PaginateTable, SearchBar } from "@/components/layout"
-
 export default {
-  components: {
-    PaginateTable,
-    SearchBar
-  }
+  name: "LayoutPage"
 }
 </script>
 

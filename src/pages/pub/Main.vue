@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="side" v-loading="loadingMenu" :class="{'side-collapse':isCollapse}">
-      <el-menu default-active="1-4-1" class="el-menu-vertical-demo" :collapse="isCollapse" :background-color="style.backgroundColor" :text-color="style.textColor" :active-text-color="style.activeTextColor">
+      <el-menu :default-openeds="defaultOpeneds" :collapse="isCollapse" :background-color="style.backgroundColor" :text-color="style.textColor" :active-text-color="style.activeTextColor">
         <el-menu-item index="ROOT">
           <i class="el-icon-document"></i>
           <span slot="title">首页</span>
@@ -20,13 +20,13 @@
                     {{thdMenu.mname}}
                   </el-menu-item>
                 </el-submenu>
-                <el-menu-item :index="secondMenu.mid" :key="secondMenu.mid" v-if="secondMenu.type=='URL'">
+                <el-menu-item :index="secondMenu.mid" :key="secondMenu.mid" v-if="secondMenu.type=='URL'" @click.native="open(secondMenu)">
                   {{secondMenu.mname}}
                 </el-menu-item>
               </template>
             </template>
           </el-submenu>
-          <el-menu-item :index="menu.mid" :key="menu.mid" v-if="menu.type=='URL'">
+          <el-menu-item :index="menu.mid" :key="menu.mid" v-if="menu.type=='URL'" @click.native="open(menu)">
             <i class="el-icon-document"></i>
             <span slot="title">{{menu.mname}}</span>
           </el-menu-item>
@@ -66,7 +66,6 @@
       </el-dialog>
       <div class="view">
         <router-view>
-          kkk
         </router-view>
       </div>
     </div>
@@ -85,6 +84,7 @@ export default {
       loadingMenu: false,
       isCollapse: false,
       isFullscreen: false,
+      defaultOpeneds: [],
       style: {
         backgroundColor: "#304156",
         textColor: "#bfcbd9",
@@ -104,6 +104,9 @@ export default {
       let rs = await this.$get("/auth/loadRouter")
       if (rs.code == "0") {
         this.menuList = rs.list
+        rs.list.forEach(item => {
+          this.defaultOpeneds.push(item.mid)
+        })
       } else {
         alert(rs.msg)
       }
@@ -140,6 +143,11 @@ export default {
           // 获取失败,跳转登录
           this.$router.replace("/login")
         }
+      }
+    },
+    open (menu) {
+      if (menu.router) {
+        this.$router.push(menu.router)
       }
     }
   },

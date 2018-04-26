@@ -6,6 +6,12 @@
     </div>
 </template>
 
+<script>
+export default {
+  name: "LayoutSearch"
+}
+</script>
+
 <style scoped>
 .search-bar {
   flex: 0 1 100%;
