@@ -31,9 +31,9 @@
         </template>
       </el-table-column>
     </LayoutTable>
-    <el-dialog title="用户信息" :visible.sync="showDialog">
-      <UserForm :user="user" @close="showDialog=false" @success="onSearch" :show="showDialog"></UserForm>
-    </el-dialog>
+    <LayoutDialog title="用户信息" v-model="showDialog">
+      <UserForm :user="user" @success="onSearch" @close="showDialog=false"></UserForm>
+    </LayoutDialog>
   </LayoutPage>
 </template>
 

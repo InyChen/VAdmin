@@ -1,25 +1,25 @@
 <template>
-    <div class="form">
-        <el-form :model="form" :rules="rules" ref="form" label-width="100px">
-            <el-form-item label="用户ID" prop="uid">
-                <el-input v-model="form.uid" :disabled="!!user"></el-input>
-            </el-form-item>
-            <el-form-item label="用户名称" prop="uname">
-                <el-input v-model="form.uname"></el-input>
-            </el-form-item>
-            <el-form-item label="状态">
-                <el-radio v-model="form.state" label="1" border>正常</el-radio>
-                <el-radio v-model="form.state" label="0" border>禁用</el-radio>
-            </el-form-item>
-            <el-form-item label="角色">
-                <el-checkbox v-for="role in roleList" :key="role.rid" v-model="role.checked">{{role.rname}}</el-checkbox>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="validForm" :loading="submiting">保存</el-button>
-                <el-button @click="$emit('close')" v-if="!submiting">取消</el-button>
-            </el-form-item>
-        </el-form>
-    </div>
+  <div class="form">
+    <el-form :model="form" :rules="rules" ref="form" label-width="100px">
+      <el-form-item label="用户ID" prop="uid">
+        <el-input v-model="form.uid" :disabled="!!user"></el-input>
+      </el-form-item>
+      <el-form-item label="用户名称" prop="uname">
+        <el-input v-model="form.uname"></el-input>
+      </el-form-item>
+      <el-form-item label="状态">
+        <el-radio v-model="form.state" label="1" border>正常</el-radio>
+        <el-radio v-model="form.state" label="0" border>禁用</el-radio>
+      </el-form-item>
+      <el-form-item label="角色">
+        <el-checkbox v-for="role in roleList" :key="role.rid" v-model="role.checked">{{role.rname}}</el-checkbox>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="validForm" :loading="submiting">保存</el-button>
+        <el-button @click="close" v-if="!submiting">取消</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <script>
@@ -31,13 +31,24 @@ export default {
     }
   },
   data () {
-    return {
-      submiting: false,
-      form: {
+    // 如果有参数传入,则使用参数,否则使用默认值
+    let form = null
+    if (this.user) {
+      form = {
+        uid: this.user.uid,
+        uname: this.user.uname,
+        state: this.user.state
+      }
+    } else {
+      form = {
         uid: "",
         uname: "",
-        state: ""
-      },
+        state: "1"
+      }
+    }
+    return {
+      submiting: false,
+      form: form,
       roleList: [],
       rules: {
         uid: [
@@ -59,11 +70,6 @@ export default {
           }
         ]
       }
-    }
-  },
-  watch: {
-    user (val) {
-      this.resetForm()
     }
   },
   methods: {
@@ -98,32 +104,19 @@ export default {
           message: "保存成功",
           type: "success"
         })
-        this.$emit("success")
-        this.$emit("close")
+        this.$emit("success", this.form)
+        this.close()
       } else {
         this.$message.error(rs.msg)
       }
       this.submiting = false
     },
-    resetForm () {
-      if (this.user) {
-        this.form = {
-          uid: this.user.uid,
-          uname: this.user.uname,
-          state: this.user.state
-        }
-      } else {
-        this.form = {
-          uid: "",
-          uname: "",
-          state: "1"
-        }
-      }
-      this.loadRole()
+    close () {
+      this.$emit("close")
     }
   },
   created () {
-    this.resetForm()
+    this.loadRole()
   }
 }
 </script>
