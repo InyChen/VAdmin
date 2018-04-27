@@ -88,6 +88,12 @@ export default {
       this.pager.currentPage = page
       this.search()
     },
+    deleteRow (row) {
+      let ind = this.list.indexOf(row)
+      if (ind > -1) {
+        this.list.splice(ind, 1)
+      }
+    },
     async search () {
       this.loading = true
       let form = Object.assign(this.param, this.pager)
